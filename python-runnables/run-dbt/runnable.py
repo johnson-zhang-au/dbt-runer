@@ -43,6 +43,7 @@ class MyRunnable(Runnable):
         self.git_repo_url = self.config.get('git_repo_url')
         self.branch_name = self.config.get('branch_name')
         self.connection_name = self.config.get('connection_name')
+        logger.info(f"git_repo_url: {self.git_repo_url}, branch_name: {self.branch_name}, connection_name: {self.connection_name}")
         
     def get_progress_target(self):
         """
