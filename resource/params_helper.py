@@ -1,6 +1,12 @@
 from typing import Any, Dict, List
 import dataiku
 
+def get_dataset_list_and_proj_key() -> Tuple[List[Dict[str, Any]], str]:
+    default_project_key = dataiku.default_project_key()
+    client = dataiku.api_client()
+    project = client.get_project(default_project_key)
+    return project.list_datasets(), default_project_key
+
 def list_sql_conns_in_current_projects() -> Dict[str, List[Dict[str, str]]]:
     datasets, default_project_key = get_dataset_list_and_proj_key()
     sql_connection_list: List[Dict[str, str]] = []
