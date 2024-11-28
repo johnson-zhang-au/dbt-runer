@@ -209,7 +209,7 @@ class MyRunnable(Runnable):
             else:
                 print("dbt_sf_user is not set.")
 
-            logger.info("Password retrieved successfully from the environment variable.")
+            logger.info("Password retrieved successfully from the Dataiku connection.")
 
             # Define the path to the profiles.yml file (typically located in the ~/.dbt directory)
             profiles_path = os.path.expanduser("~/.dbt/profiles.yml")
