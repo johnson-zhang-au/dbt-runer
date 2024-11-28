@@ -16,9 +16,9 @@ def list_sql_conns_in_current_projects() -> Dict[str, List[Dict[str, str]]]:
         if connection_name not in [c["label"] for c  in sql_connection_list]:
             dataset = Dataset(project_key=default_project_key, name=dataset_dict["name"])
             ds_info = dataset.get_location_info()
-            if ds_info.get("locationInfoType","") == 'SQL':
-                val: str = dataset_dict['params'].get("connection")
-                sql_connection_list.append({"value": val, "label": connection_name})
+            #if ds_info.get("locationInfoType","") == 'SQL':
+            val: str = dataset_dict['params'].get("connection")
+            sql_connection_list.append({"value": val, "label": connection_name})
     return {"choices": sql_connection_list}
 
 def do(payload, config, plugin_config, inputs):
