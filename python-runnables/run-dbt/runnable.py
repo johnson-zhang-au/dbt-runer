@@ -205,6 +205,7 @@ class MyRunnable(Runnable):
             
             dbt_sf_password = cred.get('password')
             dbt_sf_user = cred.get('user')
+            dbt_sf_account = sf_connection.get_info().get_params().get('host').replace('.snowflakecomputing.com','')
             
             if not dbt_sf_password:
                 raise ValueError("Environment variable DBT_SF_PASSWORD is not set or is empty.")
