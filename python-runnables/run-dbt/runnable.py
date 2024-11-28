@@ -212,6 +212,7 @@ class MyRunnable(Runnable):
                 
             os.environ["DBT_SF_PASSWORD"] = dbt_sf_password # Set the environment variable directly
             os.environ["DBT_SF_USER"] = dbt_sf_user 
+            os.environ["DBT_SF_ACCOUNT"] = dbt_sf_account
             dbt_sf_user = os.getenv('DBT_SF_USER')
 
             # Verify the environment variable value
@@ -233,7 +234,7 @@ class MyRunnable(Runnable):
                     'outputs': {
                         'dev': {
                             'type': 'snowflake',
-                            'account': 'zc53318.ap-southeast-2',  # e.g., 'xy12345.snowflakecomputing.com'
+                            'account': "{{ env_var('DBT_SF_ACCOUNT') }}",  # e.g., 'xy12345'
                             'user': "{{ env_var('DBT_SF_USER') }}",  # e.g., 'your_user'
                             'password': "{{ env_var('DBT_SF_PASSWORD') }}",  # Use the password from environment variables
                             'role': 'DATAIKU_ROLE',  # Optional
