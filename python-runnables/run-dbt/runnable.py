@@ -224,7 +224,7 @@ class MyRunnable(Runnable):
                             'type': 'snowflake',
                             'account': 'zc53318.ap-southeast-2',  # e.g., 'xy12345.snowflakecomputing.com'
                             'user': "{{ env_var('DBT_SF_USER') }}",  # e.g., 'your_user'
-                            'password': dbt_sf_password,  # Use the password from environment variables
+                            'password': "{{ env_var('DBT_SF_PASSWORD') }}",  # Use the password from environment variables
                             'role': 'DATAIKU_ROLE',  # Optional
                             'database': 'DATAIKU_DATABASE',
                             'warehouse': 'DATAIKU_WAREHOUSE',
