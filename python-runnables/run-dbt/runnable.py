@@ -236,6 +236,7 @@ class MyRunnable(Runnable):
                 }
             }
 
+            logger.info(f"profile is: {snowflake_config}")
             # Create the .dbt directory if it doesn't exist
             os.makedirs(os.path.dirname(profiles_path), exist_ok=True)
             logger.info(f"Ensuring the .dbt directory exists at {os.path.dirname(profiles_path)}.")
