@@ -31,7 +31,8 @@
             "label": "Git repo url",
             "type": "STRING",
             "description": "The git repo to fetach the dbt project from",
-            "mandatory": true
+            "mandatory": true,
+            "defaultValue": "https://github.com/johnson-zhang-au/dbt-cloud-snowflake-demo.git"
         },
         {
             "name": "branch_name",
