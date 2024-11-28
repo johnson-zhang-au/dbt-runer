@@ -40,7 +40,7 @@ class MyRunnable(Runnable):
         self.project_key = project_key
         self.config = config
         self.plugin_config = plugin_config
-        self.git_repo_url = self.config()['git_repo_url']
+        self.git_repo_url = self.config.get('git_repo_url')
         self.branch_name = self.config()['branch_name']
         self.connection_name = self.config()['connection_name']
         
