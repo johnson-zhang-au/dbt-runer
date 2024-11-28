@@ -27,8 +27,8 @@
     */
     "params": [
         {
-            "name": "git_repo_name",
-            "label": "Git repo name",
+            "name": "git_repo_url",
+            "label": "Git repo url",
             "type": "STRING",
             "description": "The git repo to fetach the dbt project from",
             "mandatory": true
