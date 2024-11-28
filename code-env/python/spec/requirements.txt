@@ -1,0 +1,3 @@
+GitPython
+dbt-core
+dbt-snowflake
