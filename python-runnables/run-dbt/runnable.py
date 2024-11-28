@@ -42,7 +42,7 @@ class MyRunnable(Runnable):
         self.plugin_config = plugin_config
         self.git_repo_url = self.config.get('git_repo_url')
         self.branch_name = self.config.get('branch_name')
-        self.connection_name = self.config().get('connection_name')
+        self.connection_name = self.config.get('connection_name')
         
     def get_progress_target(self):
         """
