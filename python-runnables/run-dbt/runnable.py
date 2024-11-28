@@ -199,14 +199,15 @@ class MyRunnable(Runnable):
             if not dbt_sf_password:
                 raise ValueError("Environment variable DBT_SF_PASSWORD is not set or is empty.")
                 
-            os.environ["DBT_SF_PASSWORD"] = dbt_sf_password # Get the environment variable directly
-            my_var = os.getenv('DBT_SF_PASSWORD')
+            os.environ["DBT_SF_PASSWORD"] = dbt_sf_password # Set the environment variable directly
+            os.environ["DBT_SF_USER"] = dbt_sf_user 
+            dbt_sf_user = os.getenv('DBT_SF_USER')
 
             # Verify the environment variable value
-            if my_var:
-                print(f"MY_VARIABLE is set to: {my_var}")
+            if dbt_sf_user:
+                print(f"dbt_sf_user is set to: {dbt_sf_user}")
             else:
-                print("MY_VARIABLE is not set.")
+                print("dbt_sf_user is not set.")
 
             logger.info("Password retrieved successfully from the environment variable.")
 
