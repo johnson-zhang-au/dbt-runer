@@ -182,12 +182,18 @@ class MyRunnable(Runnable):
             logger.info("Attempting to retrieve the password from the environment variable.")
             
             client = dataiku.api_client()
+            sf_connection = client.get_connection(self.connection_name)
+            cred = sf_connection.get_info().get_basic_credential()
+            
+            """
             auth_info = client.get_auth_info(with_secrets=True)
             for secret in auth_info["secrets"]:
                 if secret["key"] == "dbt_sf_password":
                     dbt_sf_password = secret["value"]
+            """
             
-            
+            dbt_sf_password = cred.get('password')
+            dbt_sf_user = cred.get('user')
             
             if not dbt_sf_password:
                 raise ValueError("Environment variable DBT_SF_PASSWORD is not set or is empty.")
@@ -215,7 +221,7 @@ class MyRunnable(Runnable):
                         'dev': {
                             'type': 'snowflake',
                             'account': 'zc53318.ap-southeast-2',  # e.g., 'xy12345.snowflakecomputing.com'
-                            'user': 'DATAIKU_USER',  # e.g., 'your_user'
+                            'user': dbt_sf_user,  # e.g., 'your_user'
                             'password': dbt_sf_password,  # Use the password from environment variables
                             'role': 'DATAIKU_ROLE',  # Optional
                             'database': 'DATAIKU_DATABASE',
