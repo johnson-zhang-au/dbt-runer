@@ -117,7 +117,6 @@ class MyRunnable(Runnable):
             except Exception as e:
                 logger.error(f"Error deleting local repository: {e}", exc_info=True)
                 self.delete_profile()
-                self.delete_local_repo()
                 sys.exit(1)  # Exit the script with a failure code (1)
 
     def clone_and_update_repo(self):
@@ -138,7 +137,7 @@ class MyRunnable(Runnable):
         except Exception as e:
             logger.error(f"Error cloning or updating the repository: {e}", exc_info=True)
             self.delete_profile()
-            self.delete_local_repo()
+            #self.delete_local_repo()
             sys.exit(1)  # Exit the script with a failure code (1)
 
     def run_dbt_deps(self):
@@ -154,7 +153,7 @@ class MyRunnable(Runnable):
         except Exception as e:
             logger.error(f"Error running dbt deps: {e}", exc_info=True)
             self.delete_profile()
-            self.delete_local_repo()
+            #self.delete_local_repo()
             sys.exit(1)  # Exit the script with a failure code (1)
 
     def run_dbt_run(self):
@@ -175,12 +174,12 @@ class MyRunnable(Runnable):
                 logger.warning("dbt run completed unsuccessfully.")
                 logger.warning(f"Result: {res}")
                 self.delete_profile()
-                self.delete_local_repo()
+                #self.delete_local_repo()
                 sys.exit(1)  # Exit the script with a failure code (1)
         except Exception as e:
             logger.error(f"Error running dbt run: {e}", exc_info=True)
             self.delete_profile()
-            self.delete_local_repo()
+            #self.delete_local_repo()
             sys.exit(1)  # Exit the script with a failure code (1)
         return metadata
     def run(self, progress_callback):
@@ -264,12 +263,12 @@ class MyRunnable(Runnable):
             logger.error("An error occurred while setting up the profiles.yml file.", exc_info=True)
             sys.exit(1)  # Exit the script with a failure code (1)
         
-        self.delete_local_repo()  # Delete the existing local repository if it exists
-        self.clone_and_update_repo()  # Clone and update the repository
+        #self.delete_local_repo()  # Delete the existing local repository if it exists
+        #self.clone_and_update_repo()  # Clone and update the repository
         self.run_dbt_deps()  # Run dbt deps to install dependencies
         self.run_dbt_run()   # Run dbt run to execute the models
 
-        self.delete_local_repo()
+        #self.delete_local_repo()
         self.delete_profile()
             
     
