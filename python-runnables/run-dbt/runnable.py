@@ -180,7 +180,7 @@ class MyRunnable(Runnable):
         """
         try:
             # Access the password from the environment variable 'DBT_SF_PASSWORD'
-            logger.info("Attempting to retrieve the password from the environment variable.")
+            logger.info("Attempting to retrieve the password from the Dataiku connection.")
             
             client = dataiku.api_client()
             sf_connection = client.get_connection(self.connection_name)
