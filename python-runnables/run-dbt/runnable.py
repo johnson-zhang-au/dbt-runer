@@ -86,10 +86,14 @@ class MyRunnable(Runnable):
             logger.info("Metadata extraction complete.")
         except FileNotFoundError:
             logger.error(f"Error: The file {manifest_path} was not found.")
+            sys.exit(1)  # Exit the script with a failure code (1)
         except json.JSONDecodeError:
             logger.error(f"Error: The file {manifest_path} is not a valid JSON file.")
+            sys.exit(1)  # Exit the script with a failure code (1)
+            
         except Exception as e:
             logger.error(f"An error occurred: {e}")
+            sys.exit(1)  # Exit the script with a failure code (1)
         return metadata
 
     def delete_profile(self):
@@ -100,6 +104,7 @@ class MyRunnable(Runnable):
             logger.info(f"{profiles_path} has been removed.")
         else:
             logger.error(f"{profiles_path} does not exist.")
+            sys.exit(1)  # Exit the script with a failure code (1)
         
 
     def delete_local_repo(self):
@@ -113,6 +118,7 @@ class MyRunnable(Runnable):
                 logger.error(f"Error deleting local repository: {e}", exc_info=True)
                 self.delete_profile()
                 self.delete_local_repo()
+                sys.exit(1)  # Exit the script with a failure code (1)
 
     def clone_and_update_repo(self):
         """Clone the git repository and pull the latest changes."""
@@ -133,6 +139,7 @@ class MyRunnable(Runnable):
             logger.error(f"Error cloning or updating the repository: {e}", exc_info=True)
             self.delete_profile()
             self.delete_local_repo()
+            sys.exit(1)  # Exit the script with a failure code (1)
 
     def run_dbt_deps(self):
         """Run the dbt deps command."""
@@ -148,6 +155,7 @@ class MyRunnable(Runnable):
             logger.error(f"Error running dbt deps: {e}", exc_info=True)
             self.delete_profile()
             self.delete_local_repo()
+            sys.exit(1)  # Exit the script with a failure code (1)
 
     def run_dbt_run(self):
         """Run the dbt run command."""
@@ -168,10 +176,12 @@ class MyRunnable(Runnable):
                 logger.warning(f"Result: {res}")
                 self.delete_profile()
                 self.delete_local_repo()
+                sys.exit(1)  # Exit the script with a failure code (1)
         except Exception as e:
             logger.error(f"Error running dbt run: {e}", exc_info=True)
             self.delete_profile()
             self.delete_local_repo()
+            sys.exit(1)  # Exit the script with a failure code (1)
         return metadata
     def run(self, progress_callback):
         """
@@ -250,6 +260,7 @@ class MyRunnable(Runnable):
 
         except Exception as e:
             logger.error("An error occurred while setting up the profiles.yml file.", exc_info=True)
+            sys.exit(1)  # Exit the script with a failure code (1)
         
         self.delete_local_repo()  # Delete the existing local repository if it exists
         self.clone_and_update_repo()  # Clone and update the repository
