@@ -118,10 +118,10 @@ class MyRunnable(Runnable):
         try:
             logger.info("Cloning the repository from GitHub.")
             # Clone the repository
-            repo = git.Repo.clone_from('https://github.com/johnson-zhang-au/dbt-cloud-snowflake-demo.git', local_repo_path)
+            repo = git.Repo.clone_from(self.git_repo_url, local_repo_path)
             
-            logger.info("Checking out the main branch.")
-            repo.git.checkout('main')  # Checkout the main branch
+            logger.info(f"Checking out the {self.branch_name} branch.")
+            repo.git.checkout(self.branch_name)  # Checkout the main branch
             
             logger.info("Pulling the latest changes.")
             repo.remotes.origin.pull()  # Pull the latest changes
