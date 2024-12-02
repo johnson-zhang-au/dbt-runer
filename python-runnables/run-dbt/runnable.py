@@ -230,10 +230,16 @@ class MyRunnable(Runnable):
             # Cleanup profiles.yml and unset all environment variables
             env_vars_to_unset = [
                 "DBT_PROFILES_DIR",
+                "DBT_PROJECT_DIR",
                 "DBT_SF_PASSWORD",
                 "DBT_SF_USER",
                 "DBT_SF_ACCOUNT",
-                "DBT_PROJECT_DIR"
+                "DBT_SF_WAREHOUSE",
+                "DBT_SF_ROLE",
+                "DBT_SF_SCHEMA",
+                "DBT_SF_ACCESS_TOKEN",
+                "DBT_SF_APP_ID",
+                "DBT_SF_APP_SECRET"
             ]
             try:
                 self.delete_file_or_directory(LOCAL_REPO_PATH)
@@ -245,3 +251,6 @@ class MyRunnable(Runnable):
                         logger.info(f"Unset environment variable: {var}")
             except Exception as cleanup_error:
                 logger.error(f"Cleanup failed: {cleanup_error}", exc_info=True)
+                
+                
+              
