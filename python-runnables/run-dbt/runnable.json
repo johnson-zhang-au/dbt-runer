@@ -14,7 +14,7 @@
     /* whether the runnable's code is untrusted */
     "impersonate": true,
     "paramsPythonSetup": "params_helper.py",
-
+    "resultType" : "RESULT_TABLE",
 
     /* params:
     DSS will generate a formular from this list of requested parameters.
