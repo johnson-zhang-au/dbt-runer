@@ -151,6 +151,12 @@ class MyRunnable(Runnable):
             sf_connection = client.get_connection(self.connection_name)
             cred = sf_connection.get_info().get_basic_credential()
             connection_parameters = sf_connection.get_info().get_params()
+            if connection_parameters.get('authType') == "OAUTH2_APP":
+                cred = sf_connection.get_info().get_oauth2_credential()
+                access_token = cred.get('accessToken')
+            elif connection_parameters.get('authType') == "PASSWORD": 
+                dbt_sf_user=cred.get('user')
+                dbt_sf_password=cred.get('password')
 
             self.setup_profiles_yml(
                 dbt_sf_user=cred.get('user'),
