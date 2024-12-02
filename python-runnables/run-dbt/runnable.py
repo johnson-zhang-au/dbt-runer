@@ -113,36 +113,96 @@ class MyRunnable(Runnable):
             logger.error(f"Unexpected error during metadata extraction: {e}", exc_info=True)
             raise
 
-    def setup_profiles_yml(self, dbt_sf_user, dbt_sf_account, dbt_sf_password):
-        """Create the profiles.yml file for dbt configuration."""
-        profiles_path = os.path.expanduser("~/.dbt/profiles.yml")
-        os.environ["DBT_SF_PASSWORD"] = dbt_sf_password # Set the environment variable directly
-        os.environ["DBT_SF_USER"] = dbt_sf_user 
-        os.environ["DBT_SF_ACCOUNT"] = dbt_sf_account
-        snowflake_config = {
-            'snowflake_demo_project': {
-                'target': 'dev',
-                'outputs': {
-                    'dev': {
-                        'type': 'snowflake',
-                        'account': "{{ env_var('DBT_SF_ACCOUNT') }}",
-                        'user':  "{{ env_var('DBT_SF_USER') }}",
-                        'password': "{{ env_var('DBT_SF_PASSWORD') }}",
-                        'role': 'DATAIKU_ROLE',
-                        'database': 'DATAIKU_DATABASE',
-                        'warehouse': 'DATAIKU_WAREHOUSE',
-                        'schema': 'DATAIKU_SCHEMA',
-                        'threads': 1,
-                        'client_session_keep_alive': False
+
+    def setup_dbt_profiles(self):
+        """Configure and create the profiles.yml file for dbt."""
+        try:
+            client = dataiku.api_client()
+            sf_connection = client.get_connection(self.connection_name)
+            connection_info = sf_connection.get_info()
+            
+            connection_parameters = connection_info.get_params()
+            auth_type = connection_parameters.get('authType')
+            
+            common_params = {
+                'dbt_sf_account': connection_parameters.get('host').replace('.snowflakecomputing.com', ''),
+                'dbt_sf_warehouse': connection_parameters.get('warehouse'),
+                'dbt_sf_role': connection_parameters.get('role'),
+                'dbt_sf_schema': connection_parameters.get('defaultSchema')
+            }
+            
+            # Set environment variables and auth config based on authentication type
+            env_vars = {
+                "DBT_SF_ACCOUNT": common_params['dbt_sf_account'],
+                "DBT_SF_WAREHOUSE": common_params['dbt_sf_warehouse'],
+                "DBT_SF_ROLE": common_params['dbt_sf_role'],
+                "DBT_SF_SCHEMA": common_params['dbt_sf_schema']
+            }
+            
+            if auth_type == "OAUTH2_APP":
+                oauth_cred = connection_info.get_oauth2_credential()
+                env_vars.update({
+                    "DBT_SF_ACCESS_TOKEN": oauth_cred.get('accessToken'),
+                    "DBT_SF_APP_ID": oauth_cred.get('appId'),
+                    "DBT_SF_APP_SECRET": oauth_cred.get('appSecret')
+                })
+                auth_config = {
+                    'authenticator': "oauth",
+                    'token': "{{ env_var('DBT_SF_ACCESS_TOKEN') }}"
+                }
+            elif auth_type == "PASSWORD":
+                cred = connection_info.get_basic_credential()
+                env_vars.update({
+                    "DBT_SF_USER": cred.get('user'),
+                    "DBT_SF_PASSWORD": cred.get('password')
+                })
+                auth_config = {
+                    'user': "{{ env_var('DBT_SF_USER') }}",
+                    'password': "{{ env_var('DBT_SF_PASSWORD') }}",
+                    'authenticator': "snowflake"
+                }
+            else:
+                raise ValueError(f"Unsupported authentication type: {auth_type}")
+            
+            # Set environment variables
+            for key, value in env_vars.items():
+                os.environ[key] = value
+            
+            # Build the Snowflake configuration dictionary
+            snowflake_config = {
+                'snowflake_demo_project': {
+                    'target': 'dev',
+                    'outputs': {
+                        'dev': {
+                            'type': 'snowflake',
+                            'account': "{{ env_var('DBT_SF_ACCOUNT') }}",
+                            'user': auth_config.get('user'),
+                            'password': auth_config.get('password'),
+                            'authenticator': auth_config.get('authenticator'),
+                            'token': auth_config.get('token'),
+                            'role': "{{ env_var('DBT_SF_ROLE') }}",
+                            'warehouse': "{{ env_var('DBT_SF_WAREHOUSE') }}",
+                            'schema': "{{ env_var('DBT_SF_SCHEMA') }}",
+                            'threads': 1,
+                            'client_session_keep_alive': False
+                        }
                     }
                 }
             }
-        }
 
-        os.makedirs(os.path.dirname(profiles_path), exist_ok=True)
-        with open(profiles_path, 'w') as file:
-            yaml.dump(snowflake_config, file)
-        logger.info(f"profiles.yml created at {profiles_path}.")
+            # Ensure the profiles.yml directory exists and write the config to the file
+            profiles_path = os.path.expanduser("~/.dbt/profiles.yml")
+            os.makedirs(os.path.dirname(profiles_path), exist_ok=True)
+            
+            with open(profiles_path, 'w') as file:
+                yaml.dump(snowflake_config, file)
+            
+            logger.info(f"profiles.yml created at {profiles_path}.")
+        
+        except Exception as e:
+            logger.error(f"An error occurred while setting up dbt profiles: {e}")
+            raise
+
 
     def run(self, progress_callback):
         """Main execution entry point."""
@@ -154,18 +214,30 @@ class MyRunnable(Runnable):
             if connection_parameters.get('authType') == "OAUTH2_APP":
                 cred = sf_connection.get_info().get_oauth2_credential()
                 access_token = cred.get('accessToken')
+                app_id =  cred.get('appId')
+                app_secret =  cred.get('appSecret')
+                self.setup_profiles_yml(
+                    dbt_sf_auth_type = "OAUTH2_APP",
+                    dbt_sf_access_token=access_token,
+                    dbt_sf_app_id=app_id,
+                    dbt_sf_app_secret=app_secret,
+                    dbt_sf_account=connection_parameters.get('host').replace('.snowflakecomputing.com', ''),
+                    dbt_sf_warehouse=connection_parameters.get('warehouse'),
+                    dbt_sf_role=connection_parameters.get('role'),
+                    dbt_sf_schema=connection_parameters.get('defaultSchema')
+                )
             elif connection_parameters.get('authType') == "PASSWORD": 
                 dbt_sf_user=cred.get('user')
                 dbt_sf_password=cred.get('password')
-
-            self.setup_profiles_yml(
-                dbt_sf_user=cred.get('user'),
-                dbt_sf_password=cred.get('password'),
-                dbt_sf_account=connection_parameters.get('host').replace('.snowflakecomputing.com', ''),
-                dbt_sf_warehouse=connection_parameters.get('warehouse'),
-                dbt_sf_role=connection_parameters.get('role'),
-                dbt_sf_schema=connection_parameters.get('defaultSchema')
-            )
+                self.setup_profiles_yml(
+                    dbt_sf_auth_type = "PASSWORD",
+                    dbt_sf_user=dbt_sf_user,
+                    dbt_sf_password=dbt_sf_password,
+                    dbt_sf_account=connection_parameters.get('host').replace('.snowflakecomputing.com', ''),
+                    dbt_sf_warehouse=connection_parameters.get('warehouse'),
+                    dbt_sf_role=connection_parameters.get('role'),
+                    dbt_sf_schema=connection_parameters.get('defaultSchema')
+                )
 
             self.delete_file_or_directory(LOCAL_REPO_PATH)
             self.clone_and_update_repo()
