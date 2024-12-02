@@ -1,5 +1,5 @@
 # This file is the actual code for the Python runnable run-dbt
-from dataiku.runnables import Runnable
+from dataiku.runnables import Runnable, ResultTable
 import os
 import yaml
 import logging
@@ -270,7 +270,18 @@ class MyRunnable(Runnable):
 
         self.delete_local_repo()
         self.delete_profile()
-            
+        if metadata:
+            rt = ResultTable()
+            rt.add_column("database", "Database", "STRING")
+            rt.add_column("schema", "Schema", "STRING")
+            rt.add_column("table", "Table", "STRING")
+            record = []
+            for entry in metadata:
+                record = [entry['database'], entry['schema'], entry['table']]
+                rt.add_record(record)
+            return rt
+        else:
+            return None
     
 
     
