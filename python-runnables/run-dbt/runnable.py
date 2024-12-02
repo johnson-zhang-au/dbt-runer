@@ -1,16 +1,11 @@
-# This file is the actual code for the Python runnable run-dbt
-from dataiku.runnables import Runnable, ResultTable
 import os
 import yaml
 import logging
-import dataiku
-import os
-import sys
 import json
-import logging
-import git
 import shutil
-
+import git
+import dataiku
+from dataiku.runnables import Runnable, ResultTable
 
 # Configure logging
 logging.basicConfig(
@@ -19,269 +14,171 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-dbt_project_path = "/tmp/dbt-cloud-snowflake-demo"
+# Define constants
+DBT_PROJECT_PATH = "/tmp/dbt-cloud-snowflake-demo"
+LOCAL_REPO_PATH = DBT_PROJECT_PATH
+MANIFEST_PATH = f"{DBT_PROJECT_PATH}/target/manifest.json"
+os.environ["DBT_PROJECT_DIR"] = DBT_PROJECT_PATH
+PROFILES_PATH = os.path.expanduser("~/.dbt/profiles.yml")
 
-os.environ["DBT_PROJECT_DIR"] = dbt_project_path
-
-
-# Path to the local git repository
-local_repo_path = '/tmp/dbt-cloud-snowflake-demo'
-manifest_path = f"{dbt_project_path}/target/manifest.json"
 
 class MyRunnable(Runnable):
-    """The base interface for a Python runnable"""
+    """The base interface for a Python runnable."""
 
     def __init__(self, project_key, config, plugin_config):
-        """
-        :param project_key: the project in which the runnable executes
-        :param config: the dict of the configuration of the object
-        :param plugin_config: contains the plugin settings
-        """
         self.project_key = project_key
         self.config = config
         self.plugin_config = plugin_config
+
+        # Extract and validate configuration
         self.git_repo_url = self.config.get('git_repo_url')
         self.branch_name = self.config.get('branch_name')
         self.connection_name = self.config.get('connection_name')
-        logger.info(f"git_repo_url: {self.git_repo_url}, branch_name: {self.branch_name}, connection_name: {self.connection_name}")
-        
-    def get_progress_target(self):
-        """
-        If the runnable will return some progress info, have this function return a tuple of 
-        (target, unit) where unit is one of: SIZE, FILES, RECORDS, NONE
-        """
-        return None
-    def extract_dbt_snowflake_metadata(self, manifest_path):
-        """
-        Extracts final table name, schema, and database information for a dbt project using Snowflake.
 
-        Args:
-            manifest_path (str): Path to the dbt project's manifest.json file.
+        if not self.git_repo_url or not self.branch_name or not self.connection_name:
+            raise ValueError(
+                "Missing configuration. Please provide 'git_repo_url', 'branch_name', and 'connection_name'."
+            )
 
-        Returns:
-            list: A list of dictionaries containing database, schema, and table details.
-        """
-        metadata = []
+        logger.info(
+            f"Initialized MyRunnable with git_repo_url: {self.git_repo_url}, "
+            f"branch_name: {self.branch_name}, connection_name: {self.connection_name}"
+        )
+
+    def delete_file_or_directory(self, path):
+        """Delete a file or directory."""
         try:
-            # Load the manifest.json file
-            with open(manifest_path, 'r') as f:
-                manifest = json.load(f)
-
-            #print(json.dumps(manifest, indent=4))
-
-            for node_name, node in manifest.get('nodes', {}).items():
-                if node.get('resource_type') == 'model' and node.get('config', {}).get('materialized') in ['table', 'view']:
-                    # Extract database, schema, and table information
-                    database = node['database']
-                    schema = node['schema']
-                    table = node['name']
-
-                    metadata.append({
-                        'database': database,
-                        'schema': schema,
-                        'table': table
-                    })
-                    logger.info(f"Database: {database}, Schema: {schema}, Table: {table}")
-
-            logger.info("Metadata extraction complete.")
-        except FileNotFoundError:
-            logger.error(f"Error: The file {manifest_path} was not found.")
-            sys.exit(1)  # Exit the script with a failure code (1)
-        except json.JSONDecodeError:
-            logger.error(f"Error: The file {manifest_path} is not a valid JSON file.")
-            sys.exit(1)  # Exit the script with a failure code (1)
-            
+            if os.path.exists(path):
+                if os.path.isdir(path):
+                    shutil.rmtree(path)
+                else:
+                    os.remove(path)
+                logger.info(f"Deleted: {path}")
+            else:
+                logger.warning(f"Path not found: {path}")
         except Exception as e:
-            logger.error(f"An error occurred: {e}")
-            sys.exit(1)  # Exit the script with a failure code (1)
-        return metadata
-
-    def delete_profile(self):
-        profiles_path = os.path.expanduser("~/.dbt/profiles.yml")
-        # Check if the file exists and remove it if it does
-        if os.path.exists(profiles_path):
-            os.remove(profiles_path)
-            logger.info(f"{profiles_path} has been removed.")
-        else:
-            logger.error(f"{profiles_path} does not exist.")
-            sys.exit(1)  # Exit the script with a failure code (1)
-        
-
-    def delete_local_repo(self):
-        """Delete the current local git repository if it exists."""
-        if os.path.exists(local_repo_path):
-            try:
-                logger.info(f"Deleting existing local repository at {local_repo_path}.")
-                shutil.rmtree(local_repo_path)  # Delete the entire directory
-                logger.info("Existing local repository deleted successfully.")
-            except Exception as e:
-                logger.error(f"Error deleting local repository: {e}", exc_info=True)
-                self.delete_profile()
-                sys.exit(1)  # Exit the script with a failure code (1)
+            logger.error(f"Failed to delete {path}: {e}", exc_info=True)
+            raise
 
     def clone_and_update_repo(self):
-        """Clone the git repository and pull the latest changes."""
+        """Clone the git repository and checkout the specified branch."""
         try:
-            logger.info("Cloning the repository from GitHub.")
-            # Clone the repository
-            repo = git.Repo.clone_from(self.git_repo_url, local_repo_path)
-            
-            logger.info(f"Checking out the {self.branch_name} branch.")
-            repo.git.checkout(self.branch_name)  # Checkout the main branch
-            
-            logger.info("Pulling the latest changes.")
-            repo.remotes.origin.pull()  # Pull the latest changes
-            repo.remotes.origin.fetch()  # Fetch the latest changes
-            
-            logger.info(f"Repository status:\n{repo.git.status()}")
+            logger.info(f"Cloning repository {self.git_repo_url} into {LOCAL_REPO_PATH}.")
+            repo = git.Repo.clone_from(self.git_repo_url, LOCAL_REPO_PATH)
+            repo.git.checkout(self.branch_name)
+            repo.remotes.origin.pull()
+            logger.info("Repository cloned and updated successfully.")
         except Exception as e:
             logger.error(f"Error cloning or updating the repository: {e}", exc_info=True)
-            self.delete_profile()
-            self.delete_local_repo()
-            sys.exit(1)  # Exit the script with a failure code (1)
+            raise
 
-    def run_dbt_deps(self):
-        """Run the dbt deps command."""
+    def run_dbt_command(self, command):
+        """Run a dbt CLI command."""
         from dbt.cli.main import dbtRunner
-        args = ['deps']
-        
         runner = dbtRunner()
         try:
-            logger.info("Running dbt deps to install dependencies.")
-            runner.invoke(args)
-            logger.info("dbt deps completed successfully.")
-        except Exception as e:
-            logger.error(f"Error running dbt deps: {e}", exc_info=True)
-            self.delete_profile()
-            #self.delete_local_repo()
-            sys.exit(1)  # Exit the script with a failure code (1)
-
-    def run_dbt_run(self):
-        """Run the dbt run command."""
-        from dbt.cli.main import dbtRunner
-        args = ['run']
-        
-        runner = dbtRunner()
-        metadata = []
-        try:
-            logger.info("Running dbt run to execute models.")
-            res = runner.invoke(args)
-            
-            if res.success:
-                logger.info("dbt run completed successfully.")
-                metadata = self.extract_dbt_snowflake_metadata(manifest_path)
+            logger.info(f"Running dbt command: {command}")
+            result = runner.invoke([command])
+            if result.success:
+                logger.info(f"dbt {command} completed successfully.")
             else:
-                logger.warning("dbt run completed unsuccessfully.")
-                logger.warning(f"Result: {res}")
-                self.delete_profile()
-                self.delete_local_repo()
-                sys.exit(1)  # Exit the script with a failure code (1)
+                logger.error(f"dbt {command} failed with result: {result}.")
+                raise RuntimeError(f"dbt {command} execution failed.")
         except Exception as e:
-            logger.error(f"Error running dbt run: {e}", exc_info=True)
-            self.delete_profile()
-            self.delete_local_repo()
-            sys.exit(1)  # Exit the script with a failure code (1)
-        return metadata
-    def run(self, progress_callback):
-        """
-        Do stuff here. Can return a string or raise an exception.
-        The progress_callback is a function expecting 1 value: current progress
-        """
+            logger.error(f"Error executing dbt {command}: {e}", exc_info=True)
+            raise
+
+    def extract_dbt_snowflake_metadata(self):
+        """Extract metadata from the dbt project's manifest.json."""
         try:
-            # Access the password from the environment variable 'DBT_SF_PASSWORD'
-            logger.info("Attempting to retrieve the password from the Dataiku connection.")
-            
-            client = dataiku.api_client()
-            sf_connection = client.get_connection(self.connection_name)
-            cred = sf_connection.get_info().get_basic_credential()
-            
-            """
-            auth_info = client.get_auth_info(with_secrets=True)
-            for secret in auth_info["secrets"]:
-                if secret["key"] == "dbt_sf_password":
-                    dbt_sf_password = secret["value"]
-            """
-            
-            dbt_sf_password = cred.get('password')
-            dbt_sf_user = cred.get('user')
-            dbt_sf_account = sf_connection.get_info().get_params().get('host').replace('.snowflakecomputing.com','')
-            
-            if not dbt_sf_password:
-                raise ValueError("Environment variable DBT_SF_PASSWORD is not set or is empty.")
-                
-            os.environ["DBT_SF_PASSWORD"] = dbt_sf_password # Set the environment variable directly
-            os.environ["DBT_SF_USER"] = dbt_sf_user 
-            os.environ["DBT_SF_ACCOUNT"] = dbt_sf_account
-            dbt_sf_user = os.getenv('DBT_SF_USER')
+            with open(MANIFEST_PATH, 'r') as f:
+                manifest = json.load(f)
 
-            # Verify the environment variable value
-            if dbt_sf_user:
-                print(f"dbt_sf_user is set to: {dbt_sf_user}")
-            else:
-                print("dbt_sf_user is not set.")
+            metadata = [
+                {
+                    'database': node['database'],
+                    'schema': node['schema'],
+                    'table': node['name']
+                }
+                for node_name, node in manifest.get('nodes', {}).items()
+                if node.get('resource_type') == 'model' and
+                node.get('config', {}).get('materialized') in ['table', 'view']
+            ]
+            logger.info(f"Extracted metadata: {metadata}")
+            return metadata
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            logger.error(f"Error reading or parsing manifest.json: {e}", exc_info=True)
+            raise
+        except Exception as e:
+            logger.error(f"Unexpected error during metadata extraction: {e}", exc_info=True)
+            raise
 
-            logger.info("Password retrieved successfully from the Dataiku connection.")
-
-            # Define the path to the profiles.yml file (typically located in the ~/.dbt directory)
-            profiles_path = os.path.expanduser("~/.dbt/profiles.yml")
-
-            # Snowflake connection configuration
-            profile_name = 'snowflake_demo_project'
-            snowflake_config = {
-                profile_name: {
-                    'target': 'dev',
-                    'outputs': {
-                        'dev': {
-                            'type': 'snowflake',
-                            'account': "{{ env_var('DBT_SF_ACCOUNT') }}",  # e.g., 'xy12345'
-                            'user': "{{ env_var('DBT_SF_USER') }}",  # e.g., 'your_user'
-                            'password': "{{ env_var('DBT_SF_PASSWORD') }}",  # Use the password from environment variables
-                            'role': 'DATAIKU_ROLE',  # Optional
-                            'database': 'DATAIKU_DATABASE',
-                            'warehouse': 'DATAIKU_WAREHOUSE',
-                            'schema': 'DATAIKU_SCHEMA',
-                            'threads': 1,
-                            'client_session_keep_alive': False  # Optional, helps with long-running sessions
-                        }
+    def setup_profiles_yml(self, dbt_sf_user, dbt_sf_account, dbt_sf_password):
+        """Create the profiles.yml file for dbt configuration."""
+        profiles_path = os.path.expanduser("~/.dbt/profiles.yml")
+        snowflake_config = {
+            'snowflake_demo_project': {
+                'target': 'dev',
+                'outputs': {
+                    'dev': {
+                        'type': 'snowflake',
+                        'account': dbt_sf_account,
+                        'user': dbt_sf_user,
+                        'password': dbt_sf_password,
+                        'role': 'DATAIKU_ROLE',
+                        'database': 'DATAIKU_DATABASE',
+                        'warehouse': 'DATAIKU_WAREHOUSE',
+                        'schema': 'DATAIKU_SCHEMA',
+                        'threads': 1,
+                        'client_session_keep_alive': False
                     }
                 }
             }
+        }
 
-            logger.info(f"profile is: {snowflake_config}")
-            # Create the .dbt directory if it doesn't exist
-            os.makedirs(os.path.dirname(profiles_path), exist_ok=True)
-            logger.info(f"Ensuring the .dbt directory exists at {os.path.dirname(profiles_path)}.")
+        os.makedirs(os.path.dirname(profiles_path), exist_ok=True)
+        with open(profiles_path, 'w') as file:
+            yaml.dump(snowflake_config, file)
+        logger.info(f"profiles.yml created at {profiles_path}.")
 
-            # Write the Snowflake profile configuration to the profiles.yml file
-            with open(profiles_path, 'w') as file:
-                yaml.dump(snowflake_config, file, default_flow_style=False)
+    def run(self, progress_callback):
+        """Main execution entry point."""
+        try:
+            client = dataiku.api_client()
+            sf_connection = client.get_connection(self.connection_name)
+            cred = sf_connection.get_info().get_basic_credential()
 
-            logger.info(f"profiles.yml has been created at {profiles_path}")
-            logger.info(f"contnet:{snowflake_config}")
+            self.setup_profiles_yml(
+                dbt_sf_user=cred.get('user'),
+                dbt_sf_account=sf_connection.get_info().get_params().get('host').replace('.snowflakecomputing.com', ''),
+                dbt_sf_password=cred.get('password')
+            )
+
+            self.delete_file_or_directory(LOCAL_REPO_PATH)
+            self.clone_and_update_repo()
+            self.run_dbt_command('deps')
+            self.run_dbt_command('run')
+            metadata = self.extract_dbt_snowflake_metadata()
+            self.delete_file_or_directory(LOCAL_REPO_PATH)
+            self.delete_file_or_directory(PROFILES_PATH)
+            if metadata:
+                rt = ResultTable()
+                rt.add_column("database", "Database", "STRING")
+                rt.add_column("schema", "Schema", "STRING")
+                rt.add_column("table", "Table", "STRING")
+                for entry in metadata:
+                    rt.add_record([entry['database'], entry['schema'], entry['table']])
+                return rt
 
         except Exception as e:
-            logger.error("An error occurred while setting up the profiles.yml file.", exc_info=True)
-            sys.exit(1)  # Exit the script with a failure code (1)
-        
-        self.delete_local_repo()  # Delete the existing local repository if it exists
-        self.clone_and_update_repo()  # Clone and update the repository
-        self.run_dbt_deps()  # Run dbt deps to install dependencies
-        metadata = self.run_dbt_run()   # Run dbt run to execute the models
-
-        self.delete_local_repo()
-        self.delete_profile()
-        if metadata:
-            rt = ResultTable()
-            rt.add_column("database", "Database", "STRING")
-            rt.add_column("schema", "Schema", "STRING")
-            rt.add_column("table", "Table", "STRING")
-            record = []
-            for entry in metadata:
-                record = [entry['database'], entry['schema'], entry['table']]
-                rt.add_record(record)
-            return rt
-        else:
-            return None
-    
-
-    
+            logger.error("An error occurred during the dbt workflow execution.", exc_info=True)
+            raise  # Return non-zero exit code to indicate failure
+        finally:
+            # Cleanup profiles.yml and unset DBT_PROFILES_DIR
+            try:
+                self.delete_file_or_directory(PROFILES_PATH)
+                if "DBT_PROFILES_DIR" in os.environ:
+                    del os.environ["DBT_PROFILES_DIR"]
+                    logger.info("Unset DBT_PROFILES_DIR environment variable.")
+            except Exception as cleanup_error:
+                logger.error(f"Cleanup failed: {cleanup_error}", exc_info=True)
