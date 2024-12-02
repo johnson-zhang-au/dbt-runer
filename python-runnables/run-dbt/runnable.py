@@ -171,10 +171,6 @@ class MyRunnable(Runnable):
                             'type': 'snowflake',
                             'account': "{{ env_var('DBT_SF_ACCOUNT') }}",
                             'database': "{{ env_var('DBT_SF_DATABASE') }}",
-                            'user': auth_config.get('user'),
-                            'password': auth_config.get('password'),
-                            'authenticator': auth_config.get('authenticator'),
-                            'token': auth_config.get('token'),
                             'role': "{{ env_var('DBT_SF_ROLE') }}",
                             'warehouse': "{{ env_var('DBT_SF_WAREHOUSE') }}",
                             'schema': "{{ env_var('DBT_SF_SCHEMA') }}",
@@ -184,6 +180,16 @@ class MyRunnable(Runnable):
                     }
                 }
             }
+
+            # Add user and password or token to config if necessary
+            if 'user' in auth_config:
+                snowflake_config['snowflake_demo_project']['outputs']['dev']['user'] = auth_config['user']
+                snowflake_config['snowflake_demo_project']['outputs']['dev']['password'] = auth_config['password']
+            if 'authenticator' in auth_config:
+                snowflake_config['snowflake_demo_project']['outputs']['dev']['authenticator'] = auth_config['authenticator']
+            if 'token' in auth_config:
+                snowflake_config['snowflake_demo_project']['outputs']['dev']['token'] = auth_config['token']
+
 
             # Ensure the profiles.yml directory exists and write the config to the file
             profiles_path = os.path.expanduser("~/.dbt/profiles.yml")
