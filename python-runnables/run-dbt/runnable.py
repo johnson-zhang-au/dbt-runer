@@ -124,19 +124,13 @@ class MyRunnable(Runnable):
             connection_parameters = connection_info.get_params()
             auth_type = connection_parameters.get('authType')
             
-            common_params = {
-                'dbt_sf_account': connection_parameters.get('host').replace('.snowflakecomputing.com', ''),
-                'dbt_sf_warehouse': connection_parameters.get('warehouse'),
-                'dbt_sf_role': connection_parameters.get('role'),
-                'dbt_sf_schema': connection_parameters.get('defaultSchema')
-            }
-            
             # Set environment variables and auth config based on authentication type
             env_vars = {
-                "DBT_SF_ACCOUNT": common_params['dbt_sf_account'],
-                "DBT_SF_WAREHOUSE": common_params['dbt_sf_warehouse'],
-                "DBT_SF_ROLE": common_params['dbt_sf_role'],
-                "DBT_SF_SCHEMA": common_params['dbt_sf_schema']
+                "DBT_SF_ACCOUNT": connection_parameters.get('host').replace('.snowflakecomputing.com', ''),
+                "DBT_SF_DATABASE": connection_parameters.get('db'),
+                "DBT_SF_WAREHOUSE": connection_parameters.get('warehouse'),
+                "DBT_SF_ROLE": connection_parameters.get('role'),
+                "DBT_SF_SCHEMA": connection_parameters.get('defaultSchema')
             }
             
             if auth_type == "OAUTH2_APP":
@@ -176,6 +170,7 @@ class MyRunnable(Runnable):
                         'dev': {
                             'type': 'snowflake',
                             'account': "{{ env_var('DBT_SF_ACCOUNT') }}",
+                            'database': "{{ env_var('DBT_SF_DATABASE') }}",
                             'user': auth_config.get('user'),
                             'password': auth_config.get('password'),
                             'authenticator': auth_config.get('authenticator'),
