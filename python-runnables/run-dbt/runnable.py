@@ -207,38 +207,7 @@ class MyRunnable(Runnable):
     def run(self, progress_callback):
         """Main execution entry point."""
         try:
-            client = dataiku.api_client()
-            sf_connection = client.get_connection(self.connection_name)
-            cred = sf_connection.get_info().get_basic_credential()
-            connection_parameters = sf_connection.get_info().get_params()
-            if connection_parameters.get('authType') == "OAUTH2_APP":
-                cred = sf_connection.get_info().get_oauth2_credential()
-                access_token = cred.get('accessToken')
-                app_id =  cred.get('appId')
-                app_secret =  cred.get('appSecret')
-                self.setup_profiles_yml(
-                    dbt_sf_auth_type = "OAUTH2_APP",
-                    dbt_sf_access_token=access_token,
-                    dbt_sf_app_id=app_id,
-                    dbt_sf_app_secret=app_secret,
-                    dbt_sf_account=connection_parameters.get('host').replace('.snowflakecomputing.com', ''),
-                    dbt_sf_warehouse=connection_parameters.get('warehouse'),
-                    dbt_sf_role=connection_parameters.get('role'),
-                    dbt_sf_schema=connection_parameters.get('defaultSchema')
-                )
-            elif connection_parameters.get('authType') == "PASSWORD": 
-                dbt_sf_user=cred.get('user')
-                dbt_sf_password=cred.get('password')
-                self.setup_profiles_yml(
-                    dbt_sf_auth_type = "PASSWORD",
-                    dbt_sf_user=dbt_sf_user,
-                    dbt_sf_password=dbt_sf_password,
-                    dbt_sf_account=connection_parameters.get('host').replace('.snowflakecomputing.com', ''),
-                    dbt_sf_warehouse=connection_parameters.get('warehouse'),
-                    dbt_sf_role=connection_parameters.get('role'),
-                    dbt_sf_schema=connection_parameters.get('defaultSchema')
-                )
-
+            self.setup_dbt_profiles()
             self.delete_file_or_directory(LOCAL_REPO_PATH)
             self.clone_and_update_repo()
             self.run_dbt_command('deps')
