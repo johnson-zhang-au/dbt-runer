@@ -162,8 +162,7 @@ class MyRunnable(Runnable):
             self.run_dbt_command('deps')
             self.run_dbt_command('run')
             metadata = self.extract_dbt_snowflake_metadata()
-            self.delete_file_or_directory(LOCAL_REPO_PATH)
-            self.delete_file_or_directory(PROFILES_PATH)
+    
             if metadata:
                 rt = ResultTable()
                 rt.add_column("database", "Database", "STRING")
@@ -179,6 +178,7 @@ class MyRunnable(Runnable):
         finally:
             # Cleanup profiles.yml and unset DBT_PROFILES_DIR
             try:
+                self.delete_file_or_directory(LOCAL_REPO_PATH)
                 self.delete_file_or_directory(PROFILES_PATH)
                 if "DBT_PROFILES_DIR" in os.environ:
                     del os.environ["DBT_PROFILES_DIR"]
