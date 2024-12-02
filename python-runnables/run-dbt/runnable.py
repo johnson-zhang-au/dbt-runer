@@ -193,6 +193,7 @@ class MyRunnable(Runnable):
                 yaml.dump(snowflake_config, file)
             
             logger.info(f"profiles.yml created at {profiles_path}.")
+            logger.info(f"profile: {snowflake_config}")
         
         except Exception as e:
             logger.error(f"An error occurred while setting up dbt profiles: {e}")
