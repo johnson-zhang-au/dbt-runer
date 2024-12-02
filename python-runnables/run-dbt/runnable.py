@@ -185,7 +185,7 @@ class MyRunnable(Runnable):
                 "DBT_PROJECT_DIR"
             ]
             try:
-                self.delete_file_or_directory(PROFILES_PATH)
+                self.delete_file_or_directory(LOCAL_REPO_PATH)
                 self.delete_file_or_directory(PROFILES_PATH)
 
                 for var in env_vars_to_unset:
