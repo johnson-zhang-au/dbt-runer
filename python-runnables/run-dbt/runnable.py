@@ -263,12 +263,12 @@ class MyRunnable(Runnable):
             logger.error("An error occurred while setting up the profiles.yml file.", exc_info=True)
             sys.exit(1)  # Exit the script with a failure code (1)
         
-        #self.delete_local_repo()  # Delete the existing local repository if it exists
-        #self.clone_and_update_repo()  # Clone and update the repository
+        self.delete_local_repo()  # Delete the existing local repository if it exists
+        self.clone_and_update_repo()  # Clone and update the repository
         self.run_dbt_deps()  # Run dbt deps to install dependencies
         self.run_dbt_run()   # Run dbt run to execute the models
 
-        #self.delete_local_repo()
+        self.delete_local_repo()
         self.delete_profile()
             
     
