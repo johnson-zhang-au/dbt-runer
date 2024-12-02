@@ -116,15 +116,18 @@ class MyRunnable(Runnable):
     def setup_profiles_yml(self, dbt_sf_user, dbt_sf_account, dbt_sf_password):
         """Create the profiles.yml file for dbt configuration."""
         profiles_path = os.path.expanduser("~/.dbt/profiles.yml")
+        os.environ["DBT_SF_PASSWORD"] = dbt_sf_password # Set the environment variable directly
+        os.environ["DBT_SF_USER"] = dbt_sf_user 
+        os.environ["DBT_SF_ACCOUNT"] = dbt_sf_account
         snowflake_config = {
             'snowflake_demo_project': {
                 'target': 'dev',
                 'outputs': {
                     'dev': {
                         'type': 'snowflake',
-                        'account': dbt_sf_account,
-                        'user': dbt_sf_user,
-                        'password': dbt_sf_password,
+                        'account': "{{ env_var('DBT_SF_ACCOUNT') }}",
+                        'user':  "{{ env_var('DBT_SF_USER') }}",
+                        'password': "{{ env_var('DBT_SF_PASSWORD') }}",
                         'role': 'DATAIKU_ROLE',
                         'database': 'DATAIKU_DATABASE',
                         'warehouse': 'DATAIKU_WAREHOUSE',
