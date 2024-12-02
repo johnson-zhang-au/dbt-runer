@@ -150,11 +150,15 @@ class MyRunnable(Runnable):
             client = dataiku.api_client()
             sf_connection = client.get_connection(self.connection_name)
             cred = sf_connection.get_info().get_basic_credential()
+            connection_parameters = sf_connection.get_info().get_params()
 
             self.setup_profiles_yml(
                 dbt_sf_user=cred.get('user'),
-                dbt_sf_account=sf_connection.get_info().get_params().get('host').replace('.snowflakecomputing.com', ''),
-                dbt_sf_password=cred.get('password')
+                dbt_sf_password=cred.get('password'),
+                dbt_sf_account=connection_parameters.get('host').replace('.snowflakecomputing.com', ''),
+                dbt_sf_warehouse=connection_parameters.get('warehouse'),
+                dbt_sf_role=connection_parameters.get('role'),
+                dbt_sf_schema=connection_parameters.get('defaultSchema')
             )
 
             self.delete_file_or_directory(LOCAL_REPO_PATH)
