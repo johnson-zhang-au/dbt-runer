@@ -229,6 +229,7 @@ class MyRunnable(Runnable):
                 "DBT_SF_PASSWORD",
                 "DBT_SF_USER",
                 "DBT_SF_ACCOUNT",
+                "DBT_SF_DATABASE",
                 "DBT_SF_WAREHOUSE",
                 "DBT_SF_ROLE",
                 "DBT_SF_SCHEMA",
