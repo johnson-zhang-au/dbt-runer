@@ -137,8 +137,8 @@ class MyRunnable(Runnable):
                 oauth_cred = connection_info.get_oauth2_credential()
                 env_vars.update({
                     "DBT_SF_ACCESS_TOKEN": oauth_cred.get('accessToken'),
-                    "DBT_SF_APP_ID": oauth_cred.get('appId'),
-                    "DBT_SF_APP_SECRET": oauth_cred.get('appSecret')
+                    "DBT_SF_APP_ID": connection_parameters.get('appId'),
+                    "DBT_SF_APP_SECRET": connection_parameters.get('appSecret')
                 })
                 auth_config = {
                     'authenticator': "oauth",
