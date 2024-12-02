@@ -189,6 +189,7 @@ class MyRunnable(Runnable):
                 snowflake_config['snowflake_demo_project']['outputs']['dev']['authenticator'] = auth_config['authenticator']
             if 'token' in auth_config:
                 snowflake_config['snowflake_demo_project']['outputs']['dev']['token'] = auth_config['token']
+                snowflake_config['snowflake_demo_project']['outputs']['dev']['user'] = "johnson.zhang@dataiku.com"
 
 
             # Ensure the profiles.yml directory exists and write the config to the file
