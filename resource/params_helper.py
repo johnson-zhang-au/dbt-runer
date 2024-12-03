@@ -42,8 +42,7 @@ def list_snowflake_conns() -> Dict[str, List[Dict[str, str]]]:
         client = dataiku.api_client()
         connections = client.list_connections()
     except Exception as e:
-        if "UnauthorizedException" in str(e):
-            return {"choices": [{"value": None, "label": " Action forbidden, you are not admin"}]}
+        return {"choices": [{"value": None, "label": " Action forbidden, you are not admin"}]}
     # List to store Snowflake connections
     snowflake_connections: List[Dict[str, str]] = []
 
