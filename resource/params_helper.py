@@ -58,6 +58,8 @@ def list_snowflake_conns() -> Dict[str, List[Dict[str, str]]]:
         # Handle cases where the user does not have admin privileges
         if "DKUSecurityRuntimeException" in str(e):
             return {"choices": [{"value": None, "label": "Current User does not have credentials for one of the connections to access Snowflake"}]}
+        elif "UnauthorizedException" in str(e):
+            return {"choices": [{"value": None, "label": " Action forbidden, you are not admin"}]}
         else:
             # For other DSS-related exceptions
             return {"choices": [{"value": None, "label": f"An error occurred: {str(e)}"}]}
