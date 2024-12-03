@@ -34,6 +34,7 @@ class MyRunnable(Runnable):
         self.git_repo_url = self.config.get('git_repo_url')
         self.branch_name = self.config.get('branch_name')
         self.connection_name = self.config.get('connection_name')
+        self.sf_user = self.config.get('sf_user')
 
         if not self.git_repo_url or not self.branch_name or not self.connection_name:
             raise ValueError(
