@@ -43,14 +43,41 @@
                int(self.config()['parameter2'])
             */
         },
+        {
+            "name": "connect_from",
+            "label": "Choose a connection from",
+            "type": "SELECT",
+            "selectChoices" : [
+                { "value": "instance", "label": "The instance level"},
+                { "value": "project", "label": "The current Project"},
+                { "value": "manual", "label": "Manual input"}
+            ],
+            "mandatory": true
+        },
 
         /* A "SELECT" parameter is a multi-choice selector. Choices are specified using the selectChoice field*/
         {
-            "name": "connection_name",
-            "label": "Database connection name",
+            "name": "connection_name_instance",
+            "label": "Database connection name (Instance Level)",
             "type": "SELECT",
-            "description": "Connection name to the database (Currently Snowflake only)",
-            "getChoicesFromPython": true
+            "description": "Connection name to the database (Currently Snowflake only), Retrieve from the instance level",
+            "getChoicesFromPython": true,
+            "visibilityCondition": "model.connect_from == 'instance'"
+        },
+        {
+            "name": "connection_name_project",
+            "label": "Database connection name (Project Level)",
+            "type": "SELECT",
+            "description": "Connection name to the database (Currently Snowflake only), Retrieve from the current project level",
+            "getChoicesFromPython": true,
+            "visibilityCondition": "model.connect_from == 'instance'"
+        },
+        {
+            "name": "connection_name_manual",
+            "label": "Database connection name (Manual input)",
+            "type": "STRING",
+            "description": "Connection name to the database (Currently Snowflake only), manual input",
+            "visibilityCondition": "model.connect_from == 'instance'"
         },
         {
             "name": "sf_user",
