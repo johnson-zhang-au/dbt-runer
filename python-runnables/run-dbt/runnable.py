@@ -45,7 +45,7 @@ class MyRunnable(Runnable):
 
         if not self.git_repo_url or not self.branch_name or not self.connection_name:
             raise ValueError(
-                "Missing configuration. Please provide 'git_repo_url', 'branch_name', and 'connection_name'."
+                "Missing configuration. Please provide 'Git repo url', 'Branch name', and 'Database connection name'."
             )
 
         logger.info(
