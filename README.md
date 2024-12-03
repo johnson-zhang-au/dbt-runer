@@ -13,9 +13,13 @@ In order to successfully run this project, you will need the following:
 - **Snowflake warehouse** named MEDIUM_WH (or update the dbt project to use your own warehouse)
 
 ## How to:
-Once you have installed this plugin on your Dataiku instance, you can use the macro called **"dbt runner"**. This macro requires the following three mandatory parameters::
+Once you have installed this plugin on your Dataiku instance, you can use the macro called **"dbt runner"** inside any project. This macro requires the following three mandatory parameters::
 - **Git repo url**: suggest using [the dbt-cloud-snowflake-demo-template git project](https://github.com/johnson-zhang-au/dbt-cloud-snowflake-demo.git), which is a fork of [the dbt Labs Snowflake Demo Project](https://github.com/dbt-labs/dbt-cloud-snowflake-demo-template), or clone it to you own repo
 - **Git branch name**: The default is the main branch
+- **Choose a connection from**: How do you want to provide the database connection:
+  - Manual input: you manually type in the database connection name defined on this instance, you need to make sure the connection exists
+  - Retrieve the available Snowflake connections at the instance: This requires platform admin permissions to do so
+  - Retrive the available Snowflake connection in this project: The macro will try to retrieve all the Snowflake connections that is avaliable to this project, meaning there is at least on dataset in this project is based on that connection. Your account will need write access to the project (both for th project permission and account profile e.g Reader, AI Consumer or Governace Manager profile will not have the required permissions )
 - **Database connection name**:  The macro will automatically retrieve the following authentication parameters from the Snowflake connection:
     - Snowflake hostname
     - Snowflake database name
@@ -25,7 +29,9 @@ Once you have installed this plugin on your Dataiku instance, you can use the ma
     - Snowflake access token (if OAuth is used)
     - OAuth app id (if OAuth is used)
     - OAuth app secret (if OAuth is used)
+< The Macro gives you the options to:
 
+>
 Additionally, for Snowflake OAuth with per-user credentials, you will need:
 - Snowflake user (for OAuth only)
 
