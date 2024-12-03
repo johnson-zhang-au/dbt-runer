@@ -19,6 +19,12 @@ def list_sql_conns_in_current_projects() -> Dict[str, List[Dict[str, str]]]:
             #if ds_info.get("locationInfoType","") == 'SQL':
             val: str = dataset_dict['params'].get("connection")
             sql_connection_list.append({"value": val, "label": connection_name})
+    if not sql_connection_list:
+            sql_connection_list.append({
+                    "value": None,
+                    "label": "There are no Snowflake connections available in this project"
+                })
+    
     return {"choices": sql_connection_list}
 
 def list_snowflake_conns() -> Dict[str, List[Dict[str, str]]]:
@@ -41,7 +47,11 @@ def list_snowflake_conns() -> Dict[str, List[Dict[str, str]]]:
                     "value": conn,
                     "label": connection_name
                 })
-
+        if not snowflake_connections:
+            snowflake_connections.append({
+                    "value": None,
+                    "label": "There are no Snowflake connections available on this instance"
+                })
         return {"choices": snowflake_connections}
 
     except Exception as e:
