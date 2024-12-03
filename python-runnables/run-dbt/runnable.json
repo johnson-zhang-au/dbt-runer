@@ -52,6 +52,7 @@
                 { "value": "project", "label": "The current Project"},
                 { "value": "manual", "label": "Manual input"}
             ],
+            "defaultValue": "project",
             "mandatory": true
         },
 
