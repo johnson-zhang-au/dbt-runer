@@ -39,7 +39,8 @@
             "label": "Git branch name",
             "type": "STRING",
             "description": "The git repo branch name to fetach the dbt project from",
-            "defaultValue": "main"
+            "defaultValue": "main",
+            "mandatory": true
             /* Note that standard json parsing will return it as a double in Python (instead of an int), so you need to write
                int(self.config()['parameter2'])
             */
@@ -52,6 +53,13 @@
             "type": "SELECT",
             "description": "Connection name to the database",
             "getChoicesFromPython": true
+        },
+        {
+            "name": "sf_user",
+            "label": "Snowflake user (for OAuth only)",
+            "type": "STRING",
+            "description": "The Snowflake user to run dbt when OAuth is used",
+            "mandatory": false
         }
     ],
 
