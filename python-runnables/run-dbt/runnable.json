@@ -63,6 +63,7 @@
             "type": "SELECT",
             "description": "Connection name to the database (Currently Snowflake only), Retrieve from the instance level (requires platform admin permission)",
             "getChoicesFromPython": true,
+            "disableAutoReload": true,
             "visibilityCondition": "model.connect_from == 'instance'"
         },
         {
@@ -71,6 +72,7 @@
             "type": "SELECT",
             "description": "Connection name to the database (Currently Snowflake only), Retrieve from the current project level",
             "getChoicesFromPython": true,
+            "disableAutoReload": true,
             "visibilityCondition": "model.connect_from == 'project'"
         },
         {
