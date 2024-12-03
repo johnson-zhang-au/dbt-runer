@@ -45,7 +45,9 @@ class MyRunnable(Runnable):
             f"Initialized MyRunnable with git_repo_url: {self.git_repo_url}, "
             f"branch_name: {self.branch_name}, connection_name: {self.connection_name}"
         )
-
+    def get_progress_target(self):
+        return (3, 'NONE')
+    
     def delete_file_or_directory(self, path):
         """Delete a file or directory."""
         try:
