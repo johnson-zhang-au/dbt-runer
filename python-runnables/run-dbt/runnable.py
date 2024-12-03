@@ -36,9 +36,9 @@ class MyRunnable(Runnable):
         connect_from = self.config.get('connect_from')
         if connect_from == "instance":
             self.connection_name = self.config.get('connection_name_instance')
-        elif connect_from == "instance":
+        elif connect_from == "project":
             self.connection_name = self.config.get('connection_name_project')
-        elif connect_from == "instance":
+        elif connect_from == "manual":
             self.connection_name = self.config.get('connection_name_manual')    
         
         self.sf_user = self.config.get('sf_user')
