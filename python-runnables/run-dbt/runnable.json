@@ -12,7 +12,7 @@
     },
 
     /* whether the runnable's code is untrusted */
-    "impersonate": true,
+    "impersonate": false,
     "paramsPythonSetup": "params_helper.py",
     /* params:
     DSS will generate a formular from this list of requested parameters.
