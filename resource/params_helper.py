@@ -21,6 +21,23 @@ def list_sql_conns_in_current_projects() -> Dict[str, List[Dict[str, str]]]:
             sql_connection_list.append({"value": val, "label": connection_name})
     return {"choices": sql_connection_list}
 
+def list_snowflake_conns() -> Dict[str, List[Dict[str, str]]]:
+    client = dataiku.api_client()
+    connections = client.list_connections()
+            
+    # Filter connections that are of type 'snowflake'
+    snowflake_connections: List[Dict[str, str]] = []
+    for conn in connections:
+        connection_info = client.get_connection(conn).get_info()
+        #connection_params = connection_info.get_info().get_params()
+                
+        # Check if the connection is of type 'snowflake'
+        if connection_info.get('type') == 'Snowflake':
+            connection_name = f"{conn} (Snowflake)"
+            snowflake_connections.append({
+                "value": conn,
+                "label": connection_name
+            })
 def do(payload, config, plugin_config, inputs):
 
     parameter_name = payload["parameterName"]
@@ -28,4 +45,4 @@ def do(payload, config, plugin_config, inputs):
     current_project = client.get_default_project()
     if parameter_name == "connection_name":
 
-        return list_sql_conns_in_current_projects()
+        return list_snowflake_conns()
