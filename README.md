@@ -5,7 +5,7 @@ This dbt runner plugin project is intended to showcase key Dataiku + dbt + Snowf
 ## Requirements
 In order to successfully run this project, you will need the following:
 
-- A Snowflake account
+- A Snowflake account: if you have your own dbt project, then you should know what permissions are required to run your dbt project.
 - A Dataiku instance that you can install this plugin
 - Snowflake Sample Data [The TPC-H dataset that is standard with every account](https://docs.snowflake.com/en/user-guide/sample-data-tpch.html)
 - Snowflake warehouse named MEDIUM_WH (or update the dbt project to use your own warehouse)
