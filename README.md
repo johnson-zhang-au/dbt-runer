@@ -9,15 +9,20 @@ Did you know you can streamline and automate your dbt projects using Dataiku's S
 Automatically check out your dbt project configuration files from a Git repository and branch.
 Use Dataiku's native database connections—no need to store credentials in profiles or environment variables.
 Works with Snowflake, Databricks, and any database dbt supports.
+![](media/image5.png)
 2️⃣ Schedule Your Workflow
 Set up time-based triggers (hourly, daily, weekly) or
 Use custom triggers, like running the Macro when the Git branch is updated.
+![](media/image4.png)
 3️⃣ Link to Downstream Processes
 Trigger downstream flows in Dataiku automatically if your dbt project's target tables are used as inputs.
+![](media/image6.png)
 4️⃣ Stay in the Loop
 Receive notifications via Teams, Slack, email, or other channels once the job is finished.
+![](media/image7.png)
 5️⃣ Review Runs & Logs
 Access detailed logs of every step or switch to a graph view for a clear visual overview of the workflow.
+![](media/image8.png)
 
 This demo plugin showcases the integration of Dataiku, dbt, and Snowflake, highlighting key functionalities related to workflow orchestration and automation.
 
