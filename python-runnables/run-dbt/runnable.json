@@ -70,14 +70,14 @@
             "type": "SELECT",
             "description": "Connection name to the database (Currently Snowflake only), Retrieve from the current project level",
             "getChoicesFromPython": true,
-            "visibilityCondition": "model.connect_from == 'instance'"
+            "visibilityCondition": "model.connect_from == 'project'"
         },
         {
             "name": "connection_name_manual",
             "label": "Database connection name (Manual input)",
             "type": "STRING",
             "description": "Connection name to the database (Currently Snowflake only), manual input",
-            "visibilityCondition": "model.connect_from == 'instance'"
+            "visibilityCondition": "model.connect_from == 'manual'"
         },
         {
             "name": "sf_user",
