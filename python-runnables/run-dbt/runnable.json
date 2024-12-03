@@ -66,7 +66,7 @@
         },
         {
             "name": "connection_name_project",
-            "label": "Database connection name (Project Level)",
+            "label": "Database connection name (From project Level)",
             "type": "SELECT",
             "description": "Connection name to the database (Currently Snowflake only), Retrieve from the current project level",
             "getChoicesFromPython": true,
