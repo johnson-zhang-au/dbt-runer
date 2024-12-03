@@ -58,7 +58,7 @@
         /* A "SELECT" parameter is a multi-choice selector. Choices are specified using the selectChoice field*/
         {
             "name": "connection_name_instance",
-            "label": "Database connection name (Instance Level)",
+            "label": "Database connection name (From instance Level)",
             "type": "SELECT",
             "description": "Connection name to the database (Currently Snowflake only), Retrieve from the instance level (requires platform admin permission)",
             "getChoicesFromPython": true,
