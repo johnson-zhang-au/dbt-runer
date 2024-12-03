@@ -33,7 +33,14 @@ class MyRunnable(Runnable):
         # Extract and validate configuration
         self.git_repo_url = self.config.get('git_repo_url')
         self.branch_name = self.config.get('branch_name')
-        self.connect_from = self.config.get('connect_from')
+        connect_from = self.config.get('connect_from')
+        if connect_from == "instance":
+            self.connection_name = self.config.get('connection_name_instance')
+        elif connect_from == "instance":
+            self.connection_name = self.config.get('connection_name_project')
+        elif connect_from == "instance":
+            self.connection_name = self.config.get('connection_name_manual')    
+        
         self.sf_user = self.config.get('sf_user')
 
         if not self.git_repo_url or not self.branch_name or not self.connection_name:
