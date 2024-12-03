@@ -60,7 +60,7 @@
             "name": "connection_name_instance",
             "label": "Database connection name (Instance Level)",
             "type": "SELECT",
-            "description": "Connection name to the database (Currently Snowflake only), Retrieve from the instance level",
+            "description": "Connection name to the database (Currently Snowflake only), Retrieve from the instance level (requires platform admin permission)",
             "getChoicesFromPython": true,
             "visibilityCondition": "model.connect_from == 'instance'"
         },
