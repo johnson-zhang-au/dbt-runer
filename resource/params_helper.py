@@ -38,9 +38,12 @@ def list_sql_conns_in_current_projects() -> Dict[str, List[Dict[str, str]]]:
             return {"choices": [{"value": None, "label": f"An unexpected error occurred while retrieving connections"}]}
 
 def list_snowflake_conns() -> Dict[str, List[Dict[str, str]]]:
-    client = dataiku.api_client()
-    connections = client.list_connections()
-
+    try:
+        client = dataiku.api_client()
+        connections = client.list_connections()
+    except Exception as e:
+        if "UnauthorizedException" in str(e):
+            return {"choices": [{"value": None, "label": " Action forbidden, you are not admin"}]}
     # List to store Snowflake connections
     snowflake_connections: List[Dict[str, str]] = []
 
@@ -57,8 +60,6 @@ def list_snowflake_conns() -> Dict[str, List[Dict[str, str]]]:
                     "label": connection_name
                 })
         except Exception as e:
-            if "UnauthorizedException" in str(e):
-                return {"choices": [{"value": None, "label": " Action forbidden, you are not admin"}]}
             pass
     if not snowflake_connections:
             snowflake_connections.append({
