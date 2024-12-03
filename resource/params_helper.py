@@ -44,6 +44,7 @@ def do(payload, config, plugin_config, inputs):
     parameter_name = payload["parameterName"]
     client = dataiku.api_client()
     current_project = client.get_default_project()
-    if parameter_name == "connection_name":
-
+    if parameter_name == "connection_name_instance":
         return list_snowflake_conns()
+    elif parameter_name == "connection_name_project":
+        return list_sql_conns_in_current_projects()
