@@ -46,7 +46,7 @@ class MyRunnable(Runnable):
             f"branch_name: {self.branch_name}, connection_name: {self.connection_name}"
         )
     def get_progress_target(self):
-        return (6, 'NONE')
+        return (6, 'STEPS')
     
     def delete_file_or_directory(self, path):
         """Delete a file or directory."""
