@@ -213,10 +213,15 @@ class MyRunnable(Runnable):
         """Main execution entry point."""
         try:
             self.setup_dbt_profiles()
+            progress_callback(1)
             self.delete_file_or_directory(LOCAL_REPO_PATH)
+            progress_callback(2)
             self.clone_and_update_repo()
+            progress_callback(3)
             self.run_dbt_command('deps')
+            progress_callback(4)
             self.run_dbt_command('run')
+            progress_callback(5)
             metadata = self.extract_dbt_snowflake_metadata()
     
             if metadata:
@@ -257,6 +262,7 @@ class MyRunnable(Runnable):
                     if var in os.environ:
                         del os.environ[var]
                         logger.info(f"Unset environment variable: {var}")
+                progress_callback(6)
             except Exception as cleanup_error:
                 logger.error(f"Cleanup failed: {cleanup_error}", exc_info=True)
                 
