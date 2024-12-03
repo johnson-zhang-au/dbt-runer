@@ -1,7 +1,6 @@
 from typing import Any, Dict, List, Tuple
 import dataiku
 from dataiku import Dataset
-from dataiku.exceptions import DSSException
 
 def get_dataset_list_and_proj_key() -> Tuple[List[Dict[str, Any]], str]:
     default_project_key = dataiku.default_project_key()
