@@ -30,9 +30,11 @@ And one for Snowflake OAuth if per user credential is used:
 - Snowflake user (for OAuth only)
 
 ## Snowflake permissions to use the dbt-cloud-snowflake-demo-template dbt project
-In this project, it creates a stage schema named with "_staging" as the suffix with the schema in your Dataiku Snowflake connection, so your Snwoflake account need to have the permission to be able to create new schema under the database specified in your Snowflake connection.
 
-The project also tries to grant permissions after the data is loaded to the target tables,
+This dbt project creates a staging schema by appending the "_staging" suffix to the schema name specified in your Dataiku Snowflake connection.. Therefore, your Snowflake account must have the necessary permissions to create new schemas under the specified database in your Snowflake connection.
+
+The project also attempts to grant permissions to the "PUBLIC" role after data is loaded into the target tables, as shown below:
+
 ```yaml
 on-run-end:
   - "{{ grant_all_on_schemas(schemas, 'public') }}"
@@ -50,7 +52,8 @@ on-run-end:
 {% endmacro %}
 ```
 
-So your account will need to be able to do so. If your account is the owner of the schema, then you only need the following additional permissions:
+Therefore, your account will need sufficient privileges to execute these actions. If your account is the schema owner, the following additional permissions are required:
+
 ```sql
 GRANT MANAGE GRANTS ON DATABASE <<YOUR SF DATABASE ON DKU SNOWFLAKE CONNECTION>> TO ROLE <<YOUR SF ROLE ON DKU SNOWFLAKE CONNECTION>>;
 
