@@ -12,7 +12,7 @@ In order to successfully run this project, you will need the following:
 
 ## How to:
 After installing this plugin to your Dataiku instance, you will have a macro called "dbt runer", this macro has three mandatory parameters:
-- Git repo url: suggest using https://github.com/johnson-zhang-au/dbt-cloud-snowflake-demo.git or clone it to you own
+- Git repo url: suggest using [the dbt-cloud-snowflake-demo-template git project](https://github.com/johnson-zhang-au/dbt-cloud-snowflake-demo.git) or clone it to you own
 - Git branch name: default is the main branch
 - Connection name to the database : the macro will automatically pick up the following authentication parameters from the snowflake connection:
     - Snowflake hostname
