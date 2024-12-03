@@ -35,6 +35,10 @@ _The permissions outlined here are only required for automatically retrieving av
 Additionally, for Snowflake OAuth with per-user credentials, you will need:
 - Snowflake user (for OAuth only)
 
+To orchestrate the dbt project to run automatically (e.g., using a timer-based trigger), you can leverage Dataiku's Scenarios. Simply add an "Execute macro" step and select "Run dbt project from your Git repo" as the macro to be executed.  
+
+Additionally, you can extend the Scenario by incorporating steps to build downstream Dataiku flows. You can also include a "Send Message" step to automatically send notifications via Slack, Teams, Email, and other messaging platforms.
+
 ## Snowflake permissions for the dbt-cloud-snowflake-demo-template dbt project
 
 This dbt project creates a staging schema by appending the "_staging" suffix to the schema name specified in your Dataiku Snowflake connection.. Therefore, your Snowflake account must have the necessary permissions to create new schemas under the specified database in your Snowflake connection.
