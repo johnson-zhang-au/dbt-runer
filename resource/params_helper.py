@@ -57,6 +57,8 @@ def list_snowflake_conns() -> Dict[str, List[Dict[str, str]]]:
                     "label": connection_name
                 })
         except Exception as e:
+            if "UnauthorizedException" in str(e):
+                return {"choices": [{"value": None, "label": " Action forbidden, you are not admin"}]}
             pass
     if not snowflake_connections:
             snowflake_connections.append({
@@ -66,42 +68,6 @@ def list_snowflake_conns() -> Dict[str, List[Dict[str, str]]]:
     # Return the filtered list of Snowflake connections
     return {"choices": snowflake_connections}
 
-def list_snowflake_conns() -> Dict[str, List[Dict[str, str]]]:
-    try:
-        # Initialize the Dataiku API client
-        client = dataiku.api_client()
-
-        # Attempt to list connections (requires admin privileges)
-        connections = client.list_connections()
-
-        # Filter connections of type 'Snowflake'
-        snowflake_connections: List[Dict[str, str]] = []
-        for conn in connections:
-            connection_info = client.get_connection(conn).get_info()
-
-            # Check if the connection is of type 'Snowflake'
-            if connection_info.get('type') == 'Snowflake':
-                connection_name = f"{conn} (Snowflake)"
-                snowflake_connections.append({
-                    "value": conn,
-                    "label": connection_name
-                })
-        if not snowflake_connections:
-            snowflake_connections.append({
-                    "value": None,
-                    "label": "There are no Snowflake connections available on this instance"
-                })
-        return {"choices": snowflake_connections}
-    except Exception as e:
-        # Handle cases where the user does not have admin privileges
-        if "DKUSecurityRuntimeException" in str(e):
-            return {"choices": [{"value": None, "label": "Current User does not have credentials for one of the connections to access Snowflake"}]}
-        elif "UnauthorizedException" in str(e):
-            return {"choices": [{"value": None, "label": " Action forbidden, you are not admin"}]}
-        else:
-            # For other DSS-related exceptions
-            return {"choices": [{"value": None, "label": f"An unexpected error occurred while retrieving connections"}]}
-    
 def do(payload, config, plugin_config, inputs):
 
     parameter_name = payload["parameterName"]
