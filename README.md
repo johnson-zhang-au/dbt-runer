@@ -1,4 +1,4 @@
-**Welcome to the Dataiku dbt Runner Demo Plugin!**
+# Welcome to the Dataiku dbt Runner Demo Plugin!
 
 🚀 **Orchestrate Your dbt Workflows Seamlessly with Dataiku!**
 
