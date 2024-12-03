@@ -1,5 +1,25 @@
 **Welcome to the Dataiku dbt Runner Demo Plugin!**
 
+🚀 Orchestrate Your dbt Workflows Seamlessly with Dataiku!
+
+Did you know you can streamline and automate your dbt projects using Dataiku's Scenarios? With just a bit of coding, you can unlock powerful orchestration capabilities:
+
+🔑 Key Steps:
+1️⃣ Connect Your dbt Project
+Automatically check out your dbt project configuration files from a Git repository and branch.
+Use Dataiku's native database connections—no need to store credentials in profiles or environment variables.
+Works with Snowflake, Databricks, and any database dbt supports.
+2️⃣ Schedule Your Workflow
+Set up time-based triggers (hourly, daily, weekly) or
+Use custom triggers, like running the Macro when the Git branch is updated.
+3️⃣ Link to Downstream Processes
+Trigger downstream flows in Dataiku automatically if your dbt project's target tables are used as inputs.
+4️⃣ Stay in the Loop
+Receive notifications via Teams, Slack, email, or other channels once the job is finished.
+5️⃣ Review Runs & Logs
+Access detailed logs of every step or switch to a graph view for a clear visual overview of the workflow.
+
+
 This demo plugin showcases the integration of Dataiku, dbt, and Snowflake, highlighting key functionalities related to workflow orchestration and automation.
 
 Currently, the plugin supports **Snowflake**, but in theory, the same approach could be adapted to work with other databases supported by dbt.
