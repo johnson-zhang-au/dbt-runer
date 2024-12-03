@@ -16,10 +16,12 @@ In order to successfully run this project, you will need the following:
 Once you have installed this plugin on your Dataiku instance, you can use the macro called **"dbt runner"** inside any project. This macro requires the following three mandatory parameters::
 - **Git repo url**: suggest using [the dbt-cloud-snowflake-demo-template git project](https://github.com/johnson-zhang-au/dbt-cloud-snowflake-demo.git), which is a fork of [the dbt Labs Snowflake Demo Project](https://github.com/dbt-labs/dbt-cloud-snowflake-demo-template), or clone it to you own repo
 - **Git branch name**: The default is the main branch
-- **Choose a connection from**: How do you want to provide the database connection:
-  - Manual input: you manually type in the database connection name defined on this instance, you need to make sure the connection exists
-  - Retrieve the available Snowflake connections at the instance: This requires platform admin permissions to do so
-  - Retrive the available Snowflake connection in this project: The macro will try to retrieve all the Snowflake connections that is avaliable to this project, meaning there is at least on dataset in this project is based on that connection. Your account will need write access to the project (both for th project permission and account profile e.g Reader, AI Consumer or Governace Manager profile will not have the required permissions )
+
+- **Choose a connection from**: Select how you want to specify the database connection:
+  - **Manual Input**: Enter the database connection name manually as defined on this instance. Ensure the connection already exists.
+  - **Retrieve Available Snowflake Connections at the Instance Level**: This option lists all Snowflake connections available on the instance but requires platform admin permissions.
+  - **Retrieve Available Snowflake Connections for This Project**: The macro attempts to identify all Snowflake connections accessible within the current project. This includes connections associated with datasets in the project. Your account must have write access to the project. Note: Certain account profiles, such as *Reader*, *AI Consumer*, or *Governance Manager*, do not have the necessary permissions for this operation.
+
 - **Database connection name**:  The macro will automatically retrieve the following authentication parameters from the Snowflake connection:
     - Snowflake hostname
     - Snowflake database name
