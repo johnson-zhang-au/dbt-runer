@@ -60,6 +60,13 @@ Additionally, for Snowflake OAuth with per-user credentials, you will need:
 
 ![](media/image1.png)
 
+With the paramters defined correctly, you can run the dbt project manually or schedule it with Dataiku Scenario
+![](media/image2.png)
+
+When it finishes sucessfully, it will show you all the tables / views created during the process:
+
+![](media/image3.png)
+
 To orchestrate the dbt project to run automatically (e.g., using a timer-based trigger), you can leverage Dataiku's Scenarios. Simply add an "Execute macro" step and select "Run dbt project from your Git repo" as the macro to be executed.  
 
 Additionally, you can extend the Scenario by incorporating steps to build downstream Dataiku flows. You can also include a "Send Message" step to automatically send notifications via Slack, Teams, Email, and other messaging platforms.
