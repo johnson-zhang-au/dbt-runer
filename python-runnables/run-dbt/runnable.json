@@ -92,7 +92,7 @@
     ],
 
     /* list of required permissions on the project to see/run the runnable */
-    "permissions": ["WRITE_CONF"],
+    "permissions": ["READ_CONF"],
 
     /* what the code's run() returns:
        - NONE : no result
