@@ -38,6 +38,7 @@ def list_snowflake_conns() -> Dict[str, List[Dict[str, str]]]:
                 "value": conn,
                 "label": connection_name
             })
+    return {"choices": snowflake_connections}
 def do(payload, config, plugin_config, inputs):
 
     parameter_name = payload["parameterName"]
