@@ -1,4 +1,4 @@
-Welcome to the Dataiku dbt Runner Demo Plugin!
+*Welcome to the Dataiku dbt Runner Demo Plugin!*
 
 This demo plugin showcases the integration of Dataiku, dbt, and Snowflake, highlighting key functionalities related to workflow orchestration and automation.
 
