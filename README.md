@@ -19,8 +19,8 @@ After installing this plugin to your Dataiku instance, you will have a macro cal
 - Connection name to the database : the macro will automatically pick up the following authentication parameters from the snowflake connection:
     - Snowflake hostname
     - Snowflake database name
-    - snowflake schema name
-    - snowflake username
+    - Snowflake schema name
+    - Snowflake username
     - Snowflake password
     - Snowflake access token (if OAuth is used)
     - OAuth app id (if OAuth is used)
