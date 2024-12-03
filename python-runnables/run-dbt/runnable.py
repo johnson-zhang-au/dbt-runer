@@ -225,6 +225,8 @@ class MyRunnable(Runnable):
                 for entry in metadata:
                     rt.add_record([entry['database'], entry['schema'], entry['table']])
                 return rt
+            else:
+                return "An error occurred during the dbt workflow execution."
 
         except Exception as e:
             logger.error("An error occurred during the dbt workflow execution.", exc_info=True)
