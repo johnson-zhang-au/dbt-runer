@@ -19,7 +19,6 @@ Receive notifications via Teams, Slack, email, or other channels once the job is
 5️⃣ Review Runs & Logs
 Access detailed logs of every step or switch to a graph view for a clear visual overview of the workflow.
 
-
 This demo plugin showcases the integration of Dataiku, dbt, and Snowflake, highlighting key functionalities related to workflow orchestration and automation.
 
 Currently, the plugin supports **Snowflake**, but in theory, the same approach could be adapted to work with other databases supported by dbt.
