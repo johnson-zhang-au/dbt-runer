@@ -29,7 +29,7 @@ Once you have installed this plugin on your Dataiku instance, you can use the ma
 Additionally, for Snowflake OAuth with per-user credentials, you will need:
 - Snowflake user (for OAuth only)
 
-## Snowflake permissionsfor the dbt-cloud-snowflake-demo-template dbt project
+## Snowflake permissions for the dbt-cloud-snowflake-demo-template dbt project
 
 This dbt project creates a staging schema by appending the "_staging" suffix to the schema name specified in your Dataiku Snowflake connection.. Therefore, your Snowflake account must have the necessary permissions to create new schemas under the specified database in your Snowflake connection.
 
