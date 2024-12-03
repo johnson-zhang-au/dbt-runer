@@ -7,10 +7,10 @@ Currently, the plugin supports **Snowflake**, but in theory, the same approach c
 ## Requirements
 In order to successfully run this project, you will need the following:
 
-- A Snowflake account: If you have your own dbt project, you should be familiar with the necessary permissions to run dbt projects..
-- A Dataiku instance that you can install this plugin
-- Snowflake Sample Data [The TPC-H dataset that is standard with every account](https://docs.snowflake.com/en/user-guide/sample-data-tpch.html)
-- Snowflake warehouse named MEDIUM_WH (or update the dbt project to use your own warehouse)
+- A **Snowflake account**: If you have your own dbt project, you should be familiar with the necessary permissions to run dbt projects..
+- A **Dataiku instance** where this plugin can be installed.
+- **Snowflake Sample Data** [The TPC-H dataset that is standard with every account](https://docs.snowflake.com/en/user-guide/sample-data-tpch.html)
+- **Snowflake warehouse** named MEDIUM_WH (or update the dbt project to use your own warehouse)
 
 ## How to:
 After installing this plugin to your Dataiku instance, you will have a macro called "dbt runer", this macro has three mandatory parameters:
