@@ -35,7 +35,7 @@ def list_sql_conns_in_current_projects() -> Dict[str, List[Dict[str, str]]]:
             return {"choices": [{"value": None, "label": " Action forbidden, you are not admin"}]}
         else:
             # For other DSS-related exceptions
-            return {"choices": [{"value": None, "label": f"An unexpected error occurred while retrieving connections: {str(e)}"}]}
+            return {"choices": [{"value": None, "label": f"An unexpected error occurred while retrieving connections"}]}
 def list_snowflake_conns() -> Dict[str, List[Dict[str, str]]]:
     try:
         # Initialize the Dataiku API client
@@ -70,7 +70,7 @@ def list_snowflake_conns() -> Dict[str, List[Dict[str, str]]]:
             return {"choices": [{"value": None, "label": " Action forbidden, you are not admin"}]}
         else:
             # For other DSS-related exceptions
-            return {"choices": [{"value": None, "label": f"An unexpected error occurred while retrieving connections: {str(e)}"}]}
+            return {"choices": [{"value": None, "label": f"An unexpected error occurred while retrieving connections"}]}
     
 def do(payload, config, plugin_config, inputs):
 
