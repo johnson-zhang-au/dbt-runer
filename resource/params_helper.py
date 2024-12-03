@@ -64,7 +64,7 @@ def list_snowflake_conns() -> Dict[str, List[Dict[str, str]]]:
     except Exception as e:
         # Handle cases where the user does not have admin privileges
         # or other errors occur
-        return {"choices": [{"value": None, "label": "You need to be an admin"}]}
+        return {"choices": [{"value": None, "label": "nexpected error: {str(e)}"}]}
     
 def do(payload, config, plugin_config, inputs):
 
