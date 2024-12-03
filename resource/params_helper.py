@@ -22,23 +22,33 @@ def list_sql_conns_in_current_projects() -> Dict[str, List[Dict[str, str]]]:
     return {"choices": sql_connection_list}
 
 def list_snowflake_conns() -> Dict[str, List[Dict[str, str]]]:
-    client = dataiku.api_client()
-    connections = client.list_connections()
-            
-    # Filter connections that are of type 'snowflake'
-    snowflake_connections: List[Dict[str, str]] = []
-    for conn in connections:
-        connection_info = client.get_connection(conn).get_info()
-        #connection_params = connection_info.get_info().get_params()
-                
-        # Check if the connection is of type 'snowflake'
-        if connection_info.get('type') == 'Snowflake':
-            connection_name = f"{conn} (Snowflake)"
-            snowflake_connections.append({
-                "value": conn,
-                "label": connection_name
-            })
-    return {"choices": snowflake_connections}
+    try:
+        # Initialize the Dataiku API client
+        client = dataiku.api_client()
+
+        # Attempt to list connections (requires admin privileges)
+        connections = client.list_connections()
+
+        # Filter connections of type 'Snowflake'
+        snowflake_connections: List[Dict[str, str]] = []
+        for conn in connections:
+            connection_info = client.get_connection(conn).get_info()
+
+            # Check if the connection is of type 'Snowflake'
+            if connection_info.get('type') == 'Snowflake':
+                connection_name = f"{conn} (Snowflake)"
+                snowflake_connections.append({
+                    "value": conn,
+                    "label": connection_name
+                })
+
+        return {"choices": snowflake_connections}
+
+    except Exception as e:
+        # Handle cases where the user does not have admin privileges
+        # or other errors occur
+        return {"choices": [{"value": None, "label": "You need to be an admin"}]}
+    
 def do(payload, config, plugin_config, inputs):
 
     parameter_name = payload["parameterName"]
