@@ -36,6 +36,36 @@ def list_sql_conns_in_current_projects() -> Dict[str, List[Dict[str, str]]]:
         else:
             # For other DSS-related exceptions
             return {"choices": [{"value": None, "label": f"An unexpected error occurred while retrieving connections"}]}
+
+def list_snowflake_conns() -> Dict[str, List[Dict[str, str]]]:
+    client = dataiku.api_client()
+    connections = client.list_connections()
+
+    # List to store Snowflake connections
+    snowflake_connections: List[Dict[str, str]] = []
+
+    for conn in connections:
+        try:
+            # Get connection info
+            connection_info = client.get_connection(conn).get_info()
+
+            # Check if the connection is of type 'Snowflake'
+            if connection_info.get('type') == 'Snowflake':
+                connection_name = f"{conn} (Snowflake)"
+                snowflake_connections.append({
+                    "value": conn,
+                    "label": connection_name
+                })
+        except Exception as e:
+            pass
+    if not snowflake_connections:
+            snowflake_connections.append({
+                    "value": None,
+                    "label": "There are no Snowflake connections available to you on this instance"
+                })
+    # Return the filtered list of Snowflake connections
+    return {"choices": snowflake_connections}
+
 def list_snowflake_conns() -> Dict[str, List[Dict[str, str]]]:
     try:
         # Initialize the Dataiku API client
