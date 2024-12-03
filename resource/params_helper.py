@@ -71,7 +71,6 @@ def list_snowflake_conns() -> Dict[str, List[Dict[str, str]]]:
 def do(payload, config, plugin_config, inputs):
 
     parameter_name = payload["parameterName"]
-
     if parameter_name == "connection_name_instance":
         return list_snowflake_conns()
     elif parameter_name == "connection_name_project":
