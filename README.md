@@ -4,7 +4,7 @@
 
 Did you know you can streamline and automate your dbt projects using Dataiku's Scenarios? With just a bit of coding, you can unlock powerful orchestration capabilities:
 
-🔑 Key Steps:
+🔑 **Key Steps**:
 
 1️⃣ **Connect Your dbt Project**
 
