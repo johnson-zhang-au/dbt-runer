@@ -21,7 +21,7 @@ Once you have installed this plugin on your Dataiku instance, you can use the ma
   - **Manual Input**: Enter the database connection name manually as defined on this instance. Ensure the connection already exists.
   - **Retrieve Available Snowflake Connections at the Instance Level**: This option lists all Snowflake connections available on the instance but requires platform admin permissions.
   - **Retrieve Available Snowflake Connections for This Project**: The macro attempts to identify all Snowflake connections accessible within the current project. This includes connections associated with datasets in the project. Your account must have write access to the project. Note: Certain account profiles, such as *Reader*, *AI Consumer*, or *Governance Manager*, do not have the necessary permissions for this operation.
-  _The permissions mentioned here are only for automatically retrieve avaliable connections, they are not required to run the macro after you selected the correct database connection_
+_The permissions outlined here are only required for automatically retrieving available connections. They are not necessary for running the macro once you have selected the appropriate database connection._
 - **Database connection name**:  The macro will automatically retrieve the following authentication parameters from the Snowflake connection:
     - Snowflake hostname
     - Snowflake database name
@@ -31,9 +31,7 @@ Once you have installed this plugin on your Dataiku instance, you can use the ma
     - Snowflake access token (if OAuth is used)
     - OAuth app id (if OAuth is used)
     - OAuth app secret (if OAuth is used)
-< The Macro gives you the options to:
 
->
 Additionally, for Snowflake OAuth with per-user credentials, you will need:
 - Snowflake user (for OAuth only)
 
