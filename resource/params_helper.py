@@ -54,7 +54,7 @@ def list_snowflake_conns() -> Dict[str, List[Dict[str, str]]]:
                     "label": "There are no Snowflake connections available on this instance"
                 })
         return {"choices": snowflake_connections}
-    except DSSException as e:
+    except Exception as e:
         # Handle cases where the user does not have admin privileges
         if "DKUSecurityRuntimeException" in str(e):
             return {"choices": [{"value": None, "label": "Current User does not have credentials for one of the connections to access Snowflake"}]}
@@ -62,11 +62,7 @@ def list_snowflake_conns() -> Dict[str, List[Dict[str, str]]]:
             return {"choices": [{"value": None, "label": " Action forbidden, you are not admin"}]}
         else:
             # For other DSS-related exceptions
-            return {"choices": [{"value": None, "label": f"An error occurred: {str(e)}"}]}
-    except Exception as e:
-        # Handle cases where the user does not have admin privileges
-        # or other errors occur
-        return {"choices": [{"value": None, "label": "nexpected error: {str(e)}"}]}
+            return {"choices": [{"value": None, "label": f"An unexpected error occurred: {str(e)}"}]}
     
 def do(payload, config, plugin_config, inputs):
 
