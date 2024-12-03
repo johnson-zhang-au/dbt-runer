@@ -26,8 +26,9 @@ Once you have installed this plugin on your Dataiku instance, you can use the ma
     - OAuth app id (if OAuth is used)
     - OAuth app secret (if OAuth is used)
 
-And one for Snowflake OAuth if per user credential is used:
+Additionally, for Snowflake OAuth with per-user credentials, you will need:
 - Snowflake user (for OAuth only)
+
 
 ## Snowflake permissions to use the dbt-cloud-snowflake-demo-template dbt project
 
