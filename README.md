@@ -35,7 +35,6 @@ In order to successfully run this project, you will need the following:
 Once you have installed this plugin on your Dataiku instance, you can use the macro called **"dbt runner"** inside any project. This macro requires the following three mandatory parameters::
 - **Git repo url**: suggest using [the dbt-cloud-snowflake-demo-template git project](https://github.com/johnson-zhang-au/dbt-cloud-snowflake-demo.git), which is a fork of [the dbt Labs Snowflake Demo Project](https://github.com/dbt-labs/dbt-cloud-snowflake-demo-template), or clone it to you own repo
 - **Git branch name**: The default is the main branch
-
 - **Choose a connection from**: Select how you want to specify the database connection:
   - **Manual Input**: Enter the database connection name manually as defined on this instance. Ensure the connection already exists.
   - **Retrieve Available Snowflake Connections at the Instance Level**: This option lists all Snowflake connections available on the instance but requires platform admin permissions.
