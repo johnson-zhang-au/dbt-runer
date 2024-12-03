@@ -53,6 +53,8 @@ _The permissions outlined here are only required for automatically retrieving av
 Additionally, for Snowflake OAuth with per-user credentials, you will need:
 - Snowflake user (for OAuth only)
 
+![](media/image1.png)
+
 To orchestrate the dbt project to run automatically (e.g., using a timer-based trigger), you can leverage Dataiku's Scenarios. Simply add an "Execute macro" step and select "Run dbt project from your Git repo" as the macro to be executed.  
 
 Additionally, you can extend the Scenario by incorporating steps to build downstream Dataiku flows. You can also include a "Send Message" step to automatically send notifications via Slack, Teams, Email, and other messaging platforms.
