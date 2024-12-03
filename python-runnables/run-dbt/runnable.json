@@ -49,7 +49,7 @@
             "name": "connection_name",
             "label": "Connection name to the database",
             "type": "SELECT",
-            "description": "Connection name to the database",
+            "description": "Connection name to the database (Currently Snowflake only)",
             "getChoicesFromPython": true
         },
         {
