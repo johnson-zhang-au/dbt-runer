@@ -1,6 +1,6 @@
 **Welcome to the Dataiku dbt Runner Demo Plugin!**
 
-🚀 Orchestrate Your dbt Workflows Seamlessly with Dataiku!
+🚀 **Orchestrate Your dbt Workflows Seamlessly with Dataiku!**
 
 Did you know you can streamline and automate your dbt projects using Dataiku's Scenarios? With just a bit of coding, you can unlock powerful orchestration capabilities:
 
