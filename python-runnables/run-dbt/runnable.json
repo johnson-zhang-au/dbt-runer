@@ -76,7 +76,7 @@
             "name": "connection_name_manual",
             "label": "Database connection name (Manual input)",
             "type": "STRING",
-            "description": "Connection name to the database (Currently Snowflake only), manual input",
+            "description": "Connection name to the database (Currently Snowflake only), From manual input",
             "visibilityCondition": "model.connect_from == 'manual'"
         },
         {
